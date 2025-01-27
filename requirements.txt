@@ -1,0 +1,14 @@
+absl-py
+nltk
+numpy==1.26.4
+scipy
+pandas
+ratelimit
+Flask
+flask-cors
+sentence_transformers
+mistralai
+datasets
+colorama
+matplotlib
+seaborn

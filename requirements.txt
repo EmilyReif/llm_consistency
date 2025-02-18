@@ -12,3 +12,6 @@ datasets
 colorama
 matplotlib
 seaborn
+plotly_express
+nbformat
+openai

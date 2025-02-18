@@ -1,0 +1,19 @@
+.single-example {
+    font-family: monospace;
+    padding: 2em;
+}
+
+.inout {
+    font-size: smaller;
+    padding-top: 1em;
+
+    span {
+        background: rgb(163, 198, 250);
+    }
+}
+
+.outputs {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+}

@@ -1,0 +1,76 @@
+.Datatable {
+  flex: 0 0 650px;
+  height: 100vh;
+  overflow-y: scroll;
+  position: relative;
+}
+
+.table:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  border-right:  5px solid #788091;
+}
+
+.line {
+  color: aliceblue;
+  cursor: pointer;
+
+  padding: .5rem .5rem;
+  border: .5px solid #788091;
+  box-sizing: border-box;
+
+  line-height: 1.5;
+  font-family: monospace;
+  position: relative;
+  height: 100px;
+  width: 230px;
+
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.line.header {
+  color: darkblue;
+  white-space: nowrap;
+  height: auto;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.line:hover {
+  opacity: .8;
+}
+
+.line.selected {
+  border-color: white;
+  border: 2px solid white;
+}
+
+.all-tables {
+    display: flex;
+    width: fit-content;
+}
+
+.consistency-value {
+  font-size: smaller;
+  opacity: .5;
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+}
+
+.header-selected {
+  font-weight: bold;
+}
+.header-selected .icon {
+  opacity: 1;
+}
+.icon {
+  opacity: .5;
+}

@@ -1,30 +1,24 @@
 import React from 'react';
-import './app.css';
-import './loading.css';
+import './App.css';
+import Datatable from './datatable';
+import Scatterplot from './scatterplot';
+import SingleExample from './single_example';
 import * as d3 from 'd3';
-import { stateManager } from './state_manager';
+import { state } from './state';
 
 
-class App extends React.Component {
-  state = { fetchedData: '' };
-
-  render() {
-    if (stateManager.loading) {
-      return (<div className="loader"></div>
-      )
-    }
-    return (
+function App() {
+  return (
+    <div className="app">
+      <Datatable></Datatable>
       <div>
-        {this.state.fetchedData}
+        <div className='scatterplots-holder'>
+          <Scatterplot />
+        </div>
+        <SingleExample></SingleExample>
       </div>
-    );
-  }
-
-  async componentDidMount() {
-    const fetchedData = (await stateManager.fetch());
-    // Code to run after component has loaded
-    this.setState(state => ({ ...state, fetchedData }));
-  }
+    </div>
+  );
 }
 
 export default App;

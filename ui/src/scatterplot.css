@@ -1,0 +1,48 @@
+svg {
+    position: absolute;
+}
+
+.holder {
+    position: relative;
+    background: rgba(0, 0, 0, .05);
+    height: 500px;
+    width: 800px;
+    color: #282c34;
+}
+
+.axis {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    font-size: smaller;
+}
+
+.tick {
+    font-size: x-small;
+    opacity: .5;
+}
+
+.x {
+    bottom: -20px;
+    border-top: 1px solid gray;
+}
+
+.y {
+    transform: rotate(-90deg);
+    top: calc(50% + -10px);
+    left: -260px;
+    width: 62%;
+    border-bottom: 1px solid gray;
+    align-items: baseline;
+}
+
+circle {
+    cursor: pointer;
+}
+
+circle:hover {
+    fill-opacity: .5;
+    stroke: white;
+}

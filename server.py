@@ -1,10 +1,13 @@
 import collections
-from absl import app
+from absl import app, flags
 from flask import Flask, make_response, request, send_file
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 import functools
-import time
 import json
+import data_storage
+import consistency_helpers
+import pandas as pd
+
 
 
 class Handler:
@@ -13,15 +16,22 @@ class Handler:
         return make_response(content)
 
 
-def hi_world(handler, request, useful_arg: str):
-    time.sleep(1)
-    result = json.dumps({"a test key": useful_arg})
-    return handler.respond(request, result, "text/json", 200)
+def get_dataset(handler, request, inputs_data):
+    # transforms = consistency_helpers.TRANSFORMS + ['original question']
+    # dataset = {t: inputs_data[t].to_list() for t in transforms}
+    dataset = inputs_data.to_dict()
+    return handler.respond(request, json.dumps(dataset), "text/json", 200)
+
+def get_generations(handler, request, generations):
+    input = request.args.get("input")
+    dataset = json.dumps({"generations": generations[input]})
+    return handler.respond(request, dataset, "text/json", 200)
 
 
-def get_handlers(useful_arg: str):
+def get_handlers(inputs_data: pd.DataFrame, generations):
     return {
-        "/hi_world": functools.partial(hi_world, useful_arg=useful_arg),
+        "/get_dataset": functools.partial(get_dataset, inputs_data=inputs_data),
+        "/get_generations": functools.partial(get_generations, generations=generations),
     }
 
 
@@ -35,10 +45,13 @@ def main(argv: collections.abc.Sequence[str]) -> None:
     def index():
         return send_file("ui/build/index.html")
 
-    # Managers or data to be passed to handlers.
-    useful_arg = "hello world"
+    inputs_data = pd.DataFrame(data_storage.load_or_create_stats()).transpose()
+    generations = data_storage.load_or_create_multi_generations()
+
     default_handler = Handler()
-    for route, handler in get_handlers(useful_arg).items():
+    for route, handler in get_handlers(
+        inputs_data=inputs_data, generations=generations
+    ).items():
         flask_app.add_url_rule(
             route,
             endpoint=route,

@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './app.css';
 import Datatable from './datatable';
 import Scatterplot from './scatterplot';
 import SingleExample from './single_example';

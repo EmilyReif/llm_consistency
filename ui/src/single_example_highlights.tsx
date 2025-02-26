@@ -13,24 +13,30 @@ class SingleExampleHighlights extends React.Component<Props> {
     state = { hoveredToken: '' };
 
     render() {
-        if (!this.props.generations) {
+        let generations = this.props.generations;
+        if (!generations) {
             return;
         }
-        const [stems, allSubstrings] = this.getAllSubstrings(this.props.generations).slice(0, 50);
+
+        // generations = generations.map(gen => gen.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ").toLowerCase());
+        const [stems, allSubstrings] = this.getAllSubstrings(generations);
         const colorScheme = d3.scaleOrdinal(d3.schemeAccent).domain(stems);
 
-        const sorted = [...this.props.generations].sort();
+        const sorted = [...generations].sort();
         return <div className="outputs">
             {sorted.map(generation => {
-                let genString = generation;
-                allSubstrings.forEach(substring => {
-                    const relevantStem = stems.find(stem => stem.includes(substring)) || stems[0];
-                    // const color = d3.color(colorScheme(substring)) as any;
+                const layeredHighlights = allSubstrings.map(substring => {
+                    const relevantStem = stems.find(stem => stem.includes(substring)) || '';
                     const color = d3.color(colorScheme(relevantStem)) as any;
                     color.opacity = .2;
-                    genString = genString.replace(substring, `<span style='background-color:${color}'> ${substring}</span>`)
+                    const genString = generation.replace(substring, `<span style='background-color:${color}'>${substring}</span>`)
+                    return (<div className='highlight' dangerouslySetInnerHTML={{__html: genString}}></div>);
+
                 })
-                return (<div className='highlight-line' dangerouslySetInnerHTML={{__html: genString}}></div>);
+                return (<div className='line-holder'> 
+                    {layeredHighlights}                    
+                    <div> {generation}</div>
+                </div>);
             })}
         </div>;
     }
@@ -38,7 +44,7 @@ class SingleExampleHighlights extends React.Component<Props> {
     getAllSubstrings(generations: string[]) {
         const allSubstringCounts: { [key: string]: number } = {}
         for (let generationString of generations) {
-            let i, j, result = [];
+            let i, j;
             const generation = generationString.split(' ');
 
             for (i = 0; i < generation.length; i++) {

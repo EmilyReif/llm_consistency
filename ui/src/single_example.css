@@ -3,12 +3,16 @@
     padding: 2em;
 }
 
+.generation {
+    text-wrap: nowrap;
+    width: 500px;
+}
 .inout {
     font-size: smaller;
     padding-top: 1em;
 
     span {
-        background: rgb(163, 198, 250);
+        font-weight: bold;
     }
 }
 

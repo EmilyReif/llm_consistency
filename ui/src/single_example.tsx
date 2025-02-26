@@ -2,10 +2,16 @@ import React from "react";
 import './single_example.css';
 import { observer } from "mobx-react";
 import { state } from "./state"; // Import your MobX store
+import * as d3 from 'd3';
+import SingleExampleWordtree from './single_example_wordtree';
+import SingleExampleWordGraph from "./single_example_wordgraph";
 
 class SingleExample extends React.Component {
-    state = { generations: [], visType: 'basic' };
+    state = { generations: [], visType: 'treeMap' };
     render() {
+        if (!state.selectedExample) {
+            return;
+        }
         return (
             <div className="single-example">
                 <div>
@@ -19,10 +25,21 @@ class SingleExample extends React.Component {
     }
 
     renderOutputs() {
-        const isFancy = this.state.visType === 'fancy';
+        let vis;
+        switch (this.state.visType) {
+            case 'treeMap':
+                vis = this.renderOutputstreeMap();
+                break;
+            case 'graph':
+                vis = this.renderOutputsGraph();
+                break;
+            default: 
+            vis = this.renderOutputsBasic();
+
+        }
         return (<div>
-            {/* {this.renderRadioButtons()} */}
-            {isFancy ? this.renderOutputsFancy() : this.renderOutputsBasic()}
+            {this.renderRadioButtons()}
+            {vis}
         </div>)
     }
 
@@ -35,10 +52,10 @@ class SingleExample extends React.Component {
             return (
                 <span>
                     <input
-                        type="radio" 
-                        id={label} 
-                        name="rendertype" 
-                        value={label} 
+                        type="radio"
+                        id={label}
+                        name="rendertype"
+                        value={label}
                         checked={this.state.visType == label}
                         onChange={handleClick}>
                     </input>
@@ -47,18 +64,30 @@ class SingleExample extends React.Component {
         }
         return (<div>
             {makeRadioButton('basic')}
-            {makeRadioButton('fancy')}
+            {makeRadioButton('treeMap')}
+            {/* {makeRadioButton('graph')} */}
         </div>)
     }
 
-    renderOutputsFancy() {
-        return <div className="outputs">
-            {this.state.generations.map(generation => <div>{generation}</div>)}
-        </div>;    }
+    renderOutputstreeMap() {
+        if (this.state.generations) {
+            return <SingleExampleWordtree generations={this.state.generations}></SingleExampleWordtree>;
+        }
+    }
+    renderOutputsGraph() {
+        if (this.state.generations) {
+            return <SingleExampleWordGraph generations={this.state.generations}></SingleExampleWordGraph>;
+        }
+    }
 
     renderOutputsBasic() {
+        if (!this.state.generations) {
+            return;
+        }
+
+        const sorted = [...this.state.generations ].sort();
         return <div className="outputs">
-            {this.state.generations.map(generation => <div>{generation}</div>)}
+            {sorted.map(generation => <div>{generation}</div>)}
         </div>;
     }
 

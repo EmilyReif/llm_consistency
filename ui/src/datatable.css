@@ -1,8 +1,11 @@
 .Datatable {
-  flex: 0 0 650px;
-  height: 100vh;
+  width: 230px;
+  height: calc(100vh - 20px);
   overflow-y: scroll;
   position: relative;
+  resize: horizontal;
+  position: relative;
+  overflow: auto;
 }
 
 .table:first-child {
@@ -44,7 +47,7 @@
 }
 
 .line:hover {
-  opacity: .8;
+  border-color: white;
 }
 
 .line.selected {

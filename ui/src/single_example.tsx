@@ -4,6 +4,7 @@ import { observer } from "mobx-react";
 import { state } from "./state"; // Import your MobX store
 import * as d3 from 'd3';
 import SingleExampleWordtree from './single_example_wordtree';
+import SingleExampleHighlights from "./single_example_highlights";
 import SingleExampleWordGraph from "./single_example_wordgraph";
 
 class SingleExample extends React.Component {
@@ -32,6 +33,10 @@ class SingleExample extends React.Component {
                 break;
             case 'graph':
                 vis = this.renderOutputsGraph();
+                break;
+
+            case 'highlights':
+                vis = this.renderOutputsHighlights();
                 break;
             default: 
             vis = this.renderOutputsBasic();
@@ -64,6 +69,7 @@ class SingleExample extends React.Component {
         }
         return (<div>
             {makeRadioButton('basic')}
+            {makeRadioButton('highlights')}
             {makeRadioButton('treeMap')}
             {/* {makeRadioButton('graph')} */}
         </div>)
@@ -89,6 +95,12 @@ class SingleExample extends React.Component {
         return <div className="outputs">
             {sorted.map(generation => <div>{generation}</div>)}
         </div>;
+    }
+
+    renderOutputsHighlights() {
+        if (this.state.generations) {
+            return <SingleExampleHighlights generations={this.state.generations}></SingleExampleHighlights>;
+        }
     }
 
     async componentDidUpdate() {

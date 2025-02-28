@@ -62,7 +62,7 @@ class SingleExampleHighlights extends React.Component<Props> {
 
         // Remove counts of 1
         const allSubstringCountsFiltered = Object.entries(allSubstringCounts)
-            .filter(([substring, count]) => count > 2 && substring.length > 5)
+            .filter(([substring, count]) => count >= 2 && substring.length >= 2)
             .sort((a, b) => b[1] - a[1]) // sort by counts
             .sort((a, b) => b[0].length - a[0].length) // sort by substring length
             .map(([substring, count]) => substring)

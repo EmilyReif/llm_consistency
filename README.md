@@ -1,6 +1,6 @@
 
-# Simple TS + Python app
-A simple front and backend app for vis experiments.
+# Consistency 
+Experiments and visualizations for better understanding and visusalizing inconsistency in LLM outputs.
 
 # Demo
 ## Running the server

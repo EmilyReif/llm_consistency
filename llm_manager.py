@@ -7,6 +7,7 @@ import asyncio
 from openai import AsyncOpenAI
 from concurrent.futures import ThreadPoolExecutor
 from tqdm.asyncio import tqdm_asyncio  # Supports async progress bars
+import api_keys
 
 MAKE_ANSWERS_SHORT = "Make your answers as short as possible. If you can answer in a single word or sentence, do that. If you can answer in a single sentence do that. Only use multiple sentences or paragraphs when it’s necessary to convey the meaning of your answer in longer responses."
 
@@ -73,7 +74,7 @@ class MistralLLM(LLM):
 
 
 class OpenAILLM(LLM):
-    def __init__(self, name="gpt-4o-mini", api_key=""):
+    def __init__(self, name="gpt-4o-mini", api_key=api_keys.OPENAI_API_KEY):
         self.api_key = api_key
         self.name = name
         self.llm = OpenAI(api_key=api_key)
@@ -99,7 +100,7 @@ class OpenAILLM(LLM):
 
 
 class ConcurrentOpenAILLM(LLM):
-    def __init__(self, name="gpt-4o-mini", api_key=""):
+    def __init__(self, name="gpt-4o-mini", api_key=api_keys.OPENAI_API_KEY):
         self.api_key = api_key
         self.name = name
         self.async_llm = AsyncOpenAI(api_key=api_key)  # Async version

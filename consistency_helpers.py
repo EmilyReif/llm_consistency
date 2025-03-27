@@ -8,6 +8,8 @@ def get_consistency(responses: list[str], embedder):
     embs = embedder.embed(responses)
     return get_mean_cosine_sim(embs)
 
+def cos_sim_key(transform_name):
+    return f'cos_sim_{transform_name}'
 
 TRANSFORMS = [
     'lowercase',

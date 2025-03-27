@@ -2,13 +2,17 @@ import * as d3 from 'd3';
 import { makeAutoObservable } from "mobx";
 
 const BASE_URL = 'http://localhost:5432';
+const DEFAULT_NUM_GENERATIONS = 10;
+const DEFAULT_TEMP = .7;
 
 class State {
     protected data: { [key: string]: string[] } = {};
     protected coords: { x: number[], y: number[] } = { x: [], y: [] }
-    protected loading = false;
+    loading = false;
     selectedExample: string = '';
-    generationsCache: { [key: string]: string[] } = {};
+    temp: number = DEFAULT_TEMP;
+    numGenerations: number = DEFAULT_NUM_GENERATIONS;
+    generationsCache: { [example: string]: { [temp: number]: { [numGenerations: number]: string[] } } } = {};
 
     colorScale = d3.scaleSequential(d3.interpolateBlues).domain([0, 1]);
     // colorScale = d3.scaleSequential(d3.interpolateHsl('gray', 'midnightblue')).domain([0, 1]);
@@ -35,7 +39,7 @@ class State {
     sortArrayByOther(toBeSorted: any[], toSortBy: any[], ascending: boolean) {
         return toBeSorted
             .map((value, index) => ({ value, index: toSortBy[index] })) // Pair elements with sort index
-            .sort((a, b) => ascending ? a.index - b.index: b.index - a.index) // Sort by index
+            .sort((a, b) => ascending ? a.index - b.index : b.index - a.index) // Sort by index
             .map(({ value }) => value); // Extract sorted values
     }
 
@@ -74,23 +78,28 @@ class State {
         return this.coords;
     }
 
-    async fetchGenerations(input: string) {
+    async fetchGenerations() {
+        const input = this.selectedExample;
         if (!input) {
             return [];
         }
-        if (input in this.generationsCache) {
-            return this.generationsCache[input];
+        // TODO: Currently, if the generation was in the original giant cache, it is not recalculated if n or temp changes.
+        const cachedValue = this.generationsCache[input]?.[this.temp]?.[this.numGenerations];
+        if (cachedValue) {
+            return cachedValue;
         }
-
-        const url = `${BASE_URL}/get_generations?&input=${input}`;
+        let url = `${BASE_URL}/get_generations?&input=${input}&n=${this.numGenerations}&temp=${this.temp}`;
         this.loading = true;
         const result = (await d3.json(url) as any)['generations'];
-        this.generationsCache[input] = result;
+
+        // Create dictionary entries when needed, and then cache the result value.
+        this.generationsCache[input] ??= {};
+        this.generationsCache[input][this.temp] ??= {};
+        this.generationsCache[input][this.temp][this.numGenerations] ??= result;
+
         this.loading = false;
         return result;
     }
-
-
 }
 
 export const state = new State();

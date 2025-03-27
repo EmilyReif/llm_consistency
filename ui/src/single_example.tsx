@@ -8,7 +8,7 @@ import SingleExampleHighlights from "./single_example_highlights";
 import SingleExampleWordGraph from "./single_example_wordgraph";
 
 class SingleExample extends React.Component {
-    state = { generations: [], visType: 'treeMap' };
+    state = { generations: [], visType: 'treeMap'};
     render() {
         if (!state.selectedExample) {
             return;
@@ -16,7 +16,7 @@ class SingleExample extends React.Component {
         return (
             <div className="single-example">
                 <div>
-                    <div className='inout'><span>Input:</span></div>{state.selectedExample}
+                    <div className='inout'><span>Input:</span></div>{state.selectedExample} ({state.temp}) ({state.numGenerations})
                 </div>
                 <div>
                     <div className='inout'><span>Outputs:</span></div>{this.renderOutputs()}
@@ -26,6 +26,10 @@ class SingleExample extends React.Component {
     }
 
     renderOutputs() {
+        if (!this.state.generations) {
+            return;
+        }
+
         let vis;
         switch (this.state.visType) {
             case 'treeMap':
@@ -38,8 +42,8 @@ class SingleExample extends React.Component {
             case 'highlights':
                 vis = this.renderOutputsHighlights();
                 break;
-            default: 
-            vis = this.renderOutputsBasic();
+            default:
+                vis = this.renderOutputsBasic();
 
         }
         return (<div>
@@ -76,37 +80,27 @@ class SingleExample extends React.Component {
     }
 
     renderOutputstreeMap() {
-        if (this.state.generations) {
-            return <SingleExampleWordtree generations={this.state.generations}></SingleExampleWordtree>;
-        }
+        return <SingleExampleWordtree generations={this.state.generations}></SingleExampleWordtree>;
     }
     renderOutputsGraph() {
-        if (this.state.generations) {
-            return <SingleExampleWordGraph generations={this.state.generations}></SingleExampleWordGraph>;
-        }
+        return <SingleExampleWordGraph generations={this.state.generations}></SingleExampleWordGraph>;
     }
 
     renderOutputsBasic() {
-        if (!this.state.generations) {
-            return;
-        }
-
-        const sorted = [...this.state.generations ].sort();
+        const sorted = [...this.state.generations].sort();
         return <div className="outputs">
             {sorted.map(generation => <div>{generation}</div>)}
         </div>;
     }
 
     renderOutputsHighlights() {
-        if (this.state.generations) {
-            return <SingleExampleHighlights generations={this.state.generations}></SingleExampleHighlights>;
-        }
+        return <SingleExampleHighlights generations={this.state.generations}></SingleExampleHighlights>;
     }
 
     async componentDidUpdate() {
         if (state.selectedExample) {
             const oldGenerations = this.state.generations;
-            let generations = await state.fetchGenerations(state.selectedExample);
+            let generations = await state.fetchGenerations();
             if (oldGenerations != generations) {
                 this.setState(state => ({ ...state, generations }))
             }
